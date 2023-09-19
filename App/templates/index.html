@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/style.css' %}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- <h1>{{ imo }}</h1> -->
+        <div class="wrapper__header">
+            <div class="wrapper__header__block">
+                <img src="{% static 'images/pic.png' %}" alt="">
+                <h1>Ship&Save</h1>
+            </div>
+            <div class="wrapper__header__block">
+                <form action="{% url 'show' %}">
+                    <label>imo</label>
+                    <input type="text" value="9408138" id="inputmain" name="imo">
+                    <button value="show">Show</button>
+                    <!-- <button value="save">Save as file</button> -->
+                </form>
+            </div>
+        </div>
+        {% if details %}
+            {% include 'index2.html' %} 
+        {% endif %}
+        
+    
+    </div>
+    </body>
+</html>

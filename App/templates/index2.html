@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block content %}
+    <div class="wrapper">
+        <div class="wrapper__container">
+            <div class="wrapper__container__data">
+                <div class="wrapper__container__data__block d-none">
+                    {% for j in weather%}
+                    <div class="wrapper__container__data__block__date">
+                        {% for key, value in j.items %}
+                        <div class="wrapper__container__data__block__date__header">
+                            <img src="{% static 'images/arrow.png' %}" alt="">
+                            <p> {{ key }}</p>
+                        </div>
+                        <div class="wrapper__container__data__block__block">
+                            <div class="wrapper__container__data__block__info">
+                                <div class="wrapper__container__data__block__info__name">
+                                    <p>wind speed (W-E)</p>
+                                </div>
+                                <!-- <div class="wrapper__container__data__block__info__r">
+    
+                                </div> -->
+                                <div class="wrapper__container__data__block__info__value wind-u">
+                                    <p>{{ value.wind_u }}</p>
+                                </div>
+                                <!-- <div class="line"></div> -->
+                                <div class="wrapper__container__data__block__info__meaning wind-u-c"></div>
+                            </div>
+                            <div class="wrapper__container__data__block__info">
+                                <div class="wrapper__container__data__block__info__name">
+                                    <p>wind speed (S-N)</p>
+                                </div>
+                                <div class="wrapper__container__data__block__info__value wind-v">
+                                    <p>{{ value.wind_v }}</p>
+                                </div>
+                                <!-- <div class="line"></div> -->
+                                <div class="wrapper__container__data__block__info__meaning wind-v-c"></div>
+                            </div>
+                            <div class="wrapper__container__data__block__info">
+                                <div class="wrapper__container__data__block__info__name">
+                                    <p>gust</p>
+                                </div>
+                                <div class="wrapper__container__data__block__info__value gust">
+                                    <p>{{ value.gust }}</p>
+                                </div>
+                                <!-- <div class="line"></div> -->
+                                <div class="wrapper__container__data__block__info__meaning gust-c"></div>
+                            </div>
+                            <div class="wrapper__container__data__block__info">
+                                <div class="wrapper__container__data__block__info__name">
+                                    <p>waves period</p>
+                                </div>
+                                <div class="wrapper__container__data__block__info__value waves_period">
+                                    <p>{{ value.waves_period }}</p>
+                                </div>
+                                <!-- <div class="line"></div> -->
+                                <div class="wrapper__container__data__block__info__meaning waves_period-c"></div>
+                            </div>
+                            <div class="wrapper__container__data__block__info">
+                                <div class="wrapper__container__data__block__info__name">
+                                    <p>waves height</p>
+                                </div>
+                                <div class="wrapper__container__data__block__info__value waves_height">
+                                    <p>{{ value.waves_height }}</p>
+                                </div>
+                                <!-- <div class="line"></div> -->
+                                <div class="wrapper__container__data__block__info__meaning waves_height-c"></div>
+                            </div>
+    
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="wrapper__container__map">
+                <div class="wrapper__container__map__about">
+                    <h3>Information</h3>
+                    <ul>
+                        <li>Coordinates: {{ lat }}, {{ lon }}</li>
+                        <li>Speed: {{ speed }}</li>
+                        <li>Course: {{ course }}</li>
+                    </ul>
+                </div>
+                <div class="wrapper__container__map__navig">
+                    <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d18015.672155848726!2d37.3645464!3d55.63752705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sru!2sru!4v1653053708205!5m2!1sru!2sru" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> -->
+                    <!-- <div id="map_canvas"></div> -->
+                    <iframe src="https://goradar.ru/vessels_map.php?imo={{ imo }}&is_widget=1" height="500"></iframe>
+                </div>
+            </div>
+        </div>
+        <div class="wrapper__footer">
+    
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
+<script>
+    let cursor = document.querySelector('.wrapper__container__data')
+    cursor.addEventListener('click', function (e) {
+        // console.log(e.target.tagName)
+        if (e.target.tagName == 'IMG'){
+            if(e.target.parentElement.nextElementSibling.className == 'wrapper__container__data__block__block'){
+                let block = e.target.parentElement.nextElementSibling
+                let arrow = e.target.parentElement.children[0]
+                if (block.style.display == 'block') {
+                    block.style.display = 'none'
+                    arrow.style.transform = 'rotate(0deg)'
+                } else {
+                    block.style.display = 'block'
+                    arrow.style.transform = 'rotate(90deg)'
+                }
+            }
+        }
+    })
+
+    function setColor(kpis, elem, value, value2) {
+        if (kpis > value2) {
+            elem.style.backgroundColor = 'rgb(202, 27, 27)'
+            // red
+        } else {
+            if (kpis < value || kpis == 'None') {
+                elem.style.backgroundColor = 'rgb(20, 173, 66)'
+                // green
+            } else {
+                elem.style.backgroundColor = 'rgb(211, 168, 52)'
+                // orange
+            }
+        }
+    }
+
+    for(let block of document.querySelectorAll('.wrapper__container__data__block__date')){
+        setColor(block.querySelector('.wind-u p').innerHTML, block.querySelector('.wind-u-c'), 16, 18)
+        setColor(block.querySelector('.wind-v p').innerHTML, block.querySelector('.wind-v-c'), 16, 18)
+        setColor(block.querySelector('.gust p').innerHTML, block.querySelector('.gust-c'), 25, 40)
+        setColor(block.querySelector('.waves_period p').innerHTML, block.querySelector('.waves_period-c'), 5, 7)
+        setColor(block.querySelector('.waves_height p').innerHTML, block.querySelector('.waves_height-c'), 6, 8)
+    }
+
+    // function initialize(imo) {
+    //     let frame = document.querySelector('iframe')
+    //     frame.src = `https://goradar.ru/vessels_map.php?imo=${imo}&is_widget=1`
+    // }
+    
+</script>
